@@ -1,12 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>特别的邀请</title>
+    <style>
+        /* --- CSS 样式区域 --- */
+
+        /* 1. 动态背景动画 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden; /* 防止滚动条出现 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* 柔和的渐变背景色 */
+            background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #ffd1ff, #a1c4fd);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 2. 中心卡片设计 (毛玻璃效果) */
+        .card {
+            background: rgba(255, 255, 255, 0.85); /* 半透明白色背景 */
+            backdrop-filter: blur(10px); /* 毛玻璃模糊效果 */
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            max-width: 90%;
+            width: 400px;
+            z-index: 10; /* 确保卡片在爱心上面 */
+        }
+
+        h2 { color: #333; margin-bottom: 1.5rem; font-weight: 600; }
+
+        /* 3. 输入框和按钮样式 */
+        input[type=date] {
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 1rem;
+            width: 80%;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type=date]:focus { border-color: #ff9a9e; }
+
+        button {
+            padding: 12px 30px;
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 117, 140, 0.6);
+        }
+        button:active { transform: translateY(1px); }
+
+        /* 4. 爱心特效的样式 */
+        .hearts-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; /* 防止爱心挡住点击操作 */
+            z-index: 1;
+        }
+        .heart {
+            position: absolute;
+            bottom: -5vh; /* 从屏幕底部开始 */
+            font-size: 2rem;
+            opacity: 0;
+            animation: floatUp linear forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 0.8; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-120vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
 <body>
+
+    <div class="hearts-container"></div>
+
+    <div class="card">
+        <h2>开启特别惊喜✨</h2>
+        <p style="color: #666; margin-bottom: 20px;">请输入那个特别的日子</p>
+        <input type="date" id="dateInput">
+        <br>
+        <button onclick="checkDate()">确认提交</button>
+    </div>
+
     <script>
-        let d = prompt("请输入日期 (格式如: 02-02)");
-        if(d === "02-02") {
-            alert("💌 邀请你一起共进午餐");
-        } else {
-            alert("日期不对哦");
+        // --- JavaScript 逻辑区域 ---
+
+        function checkDate() {
+            const dateInput = document.getElementById('dateInput').value;
+            
+            // 获取输入框的值，格式通常是 YYYY-MM-DD
+            // 我们检查字符串是否以 "-02-02" 结尾，这样就可以忽略年份
+            if (dateInput && dateInput.endsWith('-02-02')) {
+                
+                // 1. 先触发爱心特效
+                triggerHeartRain();
+                
+                // 2. 延迟 800 毫秒再弹出窗口，让用户先看到特效
+                setTimeout(() => {
+                    alert('🌹 叮咚！\n\n我想邀请你一起共进午餐\n\n(不知你是否愿意赏光？)');
+                }, 800);
+
+            } else {
+                // 如果日期不对
+                alert('🤔 日期好像不太对哦，再想想？提示：是二月里的某一天。');
+            }
+        }
+
+        // 生成爱心雨的函数
+        function triggerHeartRain() {
+            const container = document.querySelector('.hearts-container');
+            const heartCount = 40; // 生成爱心的数量
+
+            for (let i = 0; i < heartCount; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    // 可以随机选择不同的爱心表情
+                    heart.innerHTML = ['💖', '💗', '💓', '🌹'][Math.floor(Math.random() * 4)]; 
+                    
+                    // 随机位置、大小和飘动速度
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+                    heart.style.animationDuration = (Math.random() * 3 + 3) + 's'; // 3到6秒之间
+                    
+                    container.appendChild(heart);
+
+                    // 动画结束后移除元素，清理内存
+                    setTimeout(() => { heart.remove(); }, 6000);
+                }, i * 100); // 每隔100ms生成一个，错落有致
+            }
         }
     </script>
 </body>
